@@ -41,12 +41,16 @@ class Router {
   bool pop(BuildContext context) => Navigator.pop(context);
 
   ///
-  Future navigateTo(BuildContext context, String path,
-      {bool replace = false,
-      bool clearStack = false,
-      TransitionType transition,
-      Duration transitionDuration = const Duration(milliseconds: 250),
-      RouteTransitionsBuilder transitionBuilder}) {
+  Future navigateTo(
+    BuildContext context,
+    String path, {
+    bool replace = false,
+    bool clearStack = false,
+    TransitionType transition,
+    Duration transitionDuration = const Duration(milliseconds: 250),
+    RouteTransitionsBuilder transitionBuilder,
+    bool rootNavigator = false,
+  }) {
     RouteMatch routeMatch = matchRoute(context, path,
         transitionType: transition,
         transitionsBuilder: transitionBuilder,
@@ -62,12 +66,13 @@ class Router {
       }
       if (route != null) {
         if (clearStack) {
-          future =
-              Navigator.pushAndRemoveUntil(context, route, (check) => false);
+          future = Navigator.of(context, rootNavigator: rootNavigator)
+              .pushAndRemoveUntil(route, (check) => false);
         } else {
           future = replace
-              ? Navigator.pushReplacement(context, route)
-              : Navigator.push(context, route);
+              ? Navigator.of(context, rootNavigator: rootNavigator)
+                  .pushReplacement(route)
+              : Navigator.of(context, rootNavigator: rootNavigator).push(route);
         }
         completer.complete();
       } else {
