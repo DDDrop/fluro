@@ -88,7 +88,7 @@ class Router {
   ///
   Route<Null> _notFoundRoute(BuildContext context, String path) {
     RouteCreator<Null> creator =
-        (RouteSettings routeSettings, Map<String, List<String>> parameters) {
+        (RouteSettings routeSettings, Map<String, dynamic> parameters) {
       return MaterialPageRoute<Null>(
           settings: routeSettings,
           builder: (BuildContext context) {
@@ -120,15 +120,14 @@ class Router {
           matchType: RouteMatchType.noMatch,
           errorMessage: "No matching route was found");
     }
-    Map<String, List<String>> parameters =
-        match?.parameters ?? <String, List<String>>{};
+    Map<String, dynamic> parameters = match?.parameters ?? <String, dynamic>{};
     if (handler.type == HandlerType.function) {
       handler.handlerFunc(buildContext, parameters);
       return RouteMatch(matchType: RouteMatchType.nonVisual);
     }
 
     RouteCreator creator =
-        (RouteSettings routeSettings, Map<String, List<String>> parameters) {
+        (RouteSettings routeSettings, Map<String, dynamic> parameters) {
       bool isNativeTransition = (transition == TransitionType.native ||
           transition == TransitionType.nativeModal);
       if (isNativeTransition) {
